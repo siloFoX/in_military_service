@@ -2,6 +2,6 @@
 
 ./<br>
 ../<br>
-|_ tmp<br>
-\_|_ clipboard<br>
+L -tmp/<br>
+ L clipboard<br>
 README.md
