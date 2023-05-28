@@ -3,10 +3,21 @@ from enum import Enum, auto
 
 FILE_PATH = os.path.join(os.getcwd(),"values.env")
 
+def decorator_for_show_func (func) :
+  def wrapper (*args, **kwargs) :
+    print()
+    func(*args, **kwargs)
+  
+  return wrapper
+
 def str_form (str_list) :
+  length_of_str_list = len(str_list)
+  padding_size = [10 for _ in range(length_of_str_list - 1)]
+  padding_size.insert(0, 20)
   str_format = ""
-  for each in str_list :
-    str_format += each + ' ' * (20 - calculate_length_of_str(each))
+  for idx in range(length_of_str_list) :
+    each = str_list[idx]
+    str_format += each + ' ' * (padding_size[idx] - calculate_length_of_str(each))
   str_format += '\n'
 
   return str_format
@@ -185,7 +196,9 @@ class RoomMembers :
 
     return list(filter(lambda each : each not in cleaning_members_list and ((each in excluded_members) is (each in excluded_but_lottery_members)) , room_members))
 
+  @decorator_for_show_func
   def show_status (self) :
+    print("전체인원 현황")
     for idx in range(4) :
       room_number = "room" + str(idx + 1)
       before_cleaning_members = self.cleaning_members_before_week[room_number]
@@ -216,6 +229,7 @@ class RoomMembers :
 
     return before_week_cleaning_members_by_area
 
+  @decorator_for_show_func
   def show_summary (self) :
     room_numbers = [str(idx + 1) + "생활관" for idx in range(4)]
     room_numbers.insert(0, '')
@@ -238,21 +252,19 @@ class RoomMembers :
 
     print(str_output)
 
+  @decorator_for_show_func
+  def show_lottery_members (self) :
+    lottery_members = self.get_lottery_members()
+
+    print("제비뽑기 인원")
+    for idx in range(4) :
+      room_number = "room" + str(idx + 1)
+      print(str(idx + 1) + "생활관 : " +  str(lottery_members[room_number]))
+
 
 if __name__ == "__main__" :
   room_members = RoomMembers(FILE_PATH)
-  lottery_members = room_members.get_lottery_members()
 
-  # room_members.show_status()
-  # print(lottery_members)
-  print()
   room_members.show_summary()
-
-  print("제비뽑기 인원")
-  for idx in range(4) :
-    room_number = "room" + str(idx + 1)
-    print(str(idx + 1) + "생활관 : " +  str(lottery_members[room_number]))
-  print()
-
-  print("전체인원 현황")
+  room_members.show_lottery_members()
   room_members.show_status()
