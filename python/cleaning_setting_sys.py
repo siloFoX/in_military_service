@@ -1,7 +1,8 @@
 import os
 from enum import Enum, auto
 
-FILE_PATH = os.path.join(os.getcwd(),"values.env")
+INPUT_FILE_PATH = os.path.join(os.getcwd(),"values.env")
+OUTPUT_FILE_PATH = os.path.join(os.getcwd(), "output.env")
 
 def decorator_for_show_func (func) :
   def wrapper (*args, **kwargs) :
@@ -65,6 +66,10 @@ class RoomMembers :
     with open(file_path, 'r') as file :
       contents = file.readlines()
     return contents
+
+  def write_file_contents(self, contents,  file_path) :
+    with open(file_path, 'w') as file :
+      file.write(contents)
   
   def get_members_map (self) :
     members_map = {}
@@ -230,7 +235,7 @@ class RoomMembers :
     return before_week_cleaning_members_by_area
 
   @decorator_for_show_func
-  def show_summary (self) :
+  def show_summary (self, output_file_path) :
     room_numbers = [str(idx + 1) + "생활관" for idx in range(4)]
     room_numbers.insert(0, '')
 
@@ -250,6 +255,7 @@ class RoomMembers :
     str_output += str_form(seperating_trash_each_room)
     str_output += str_form(seperating_trash)
 
+    # self.write_file_contents(str_output, output_file_path)
     print(str_output)
 
   @decorator_for_show_func
@@ -263,8 +269,8 @@ class RoomMembers :
 
 
 if __name__ == "__main__" :
-  room_members = RoomMembers(FILE_PATH)
+  room_members = RoomMembers(INPUT_FILE_PATH)
 
-  room_members.show_summary()
+  room_members.show_summary(OUTPUT_FILE_PATH)
   room_members.show_lottery_members()
   room_members.show_status()
